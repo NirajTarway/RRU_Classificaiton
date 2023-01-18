@@ -4,7 +4,8 @@ from deepClassifier.entity import (
     DataInjectionConfig,
     PrepareBaseModelConfig,
     PrepareCallbacksConfig,
-    TrainingConfig)
+    TrainingConfig,
+    EvaluationConfig)
     
 from pathlib import Path
 import os
@@ -22,7 +23,7 @@ class ConfigurationManager:
         create_directories([config.root_dir])
 
         data_injection_config =  DataInjectionConfig(
-            root_dir=config.root_dir,source_URL=config.source_URL,local_data_file=config.local_data_file,unzip_dir= config.unzip_dir
+            root_dir=config.root_dir,source_URL=config.source_URL,local_data_file=config.local_data_file,unzip_dir= config.unzip_dir,artifact_dir=config.artifact_dir
          )
         return data_injection_config
 
@@ -63,7 +64,7 @@ class ConfigurationManager:
         training = self.config.training
         prepare_base_model = self.config.prepare_base_model
         params = self.params
-        training_data = os.path.join(self.config.data_ingestion.unzip_dir, "PetImages")
+        training_data = os.path.join(self.config.data_ingestion.unzip_dir, self.config.data_ingestion.artifact_dir)
         create_directories([
             Path(training.root_dir)
         ])
@@ -80,3 +81,14 @@ class ConfigurationManager:
         )
 
         return training_config
+
+    def get_validation_config(self) -> EvaluationConfig:
+        eval_config = EvaluationConfig(
+            path_of_model=self.config.training.trained_model_path,
+            training_data=self.config.data_ingestion.unzip_dir,
+            mlflow_uri="https://dagshub.com/c17hawke/FSDS_NOV_deepCNNClassifier.mlflow",
+            all_params=self.params,
+            params_image_size=self.params.IMAGE_SIZE,
+            params_batch_size=self.params.BATCH_SIZE
+        )
+        return eval_config

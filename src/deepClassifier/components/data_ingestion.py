@@ -6,6 +6,7 @@ from deepClassifier import logger
 from deepClassifier.utils import get_size
 from tqdm import tqdm
 from pathlib import Path
+import shutil 
 
 
 class DataIngestion:
@@ -14,12 +15,12 @@ class DataIngestion:
 
     def download_file(self):
         logger.info("Trying to download file..")
+        url=self.config.source_URL
+        filename=self.config.local_data_file
         if not os.path.exists(self.config.local_data_file):
             logger.info("Download started")
-            filename, headers = request.urlretrieve(
-                url=self.config.source_URL, filename=self.config.local_data_file
-            )
-            logger.info(f"{filename} downloaded with following info:  \n{headers}")
+            shutil.copy(url,filename)
+            logger.info(f"{filename} downloaded from:  \n{url}")
         else:
             logger.info(
                 f"File already exists of size: {get_size( Path(self.config.local_data_file))}"
@@ -29,7 +30,8 @@ class DataIngestion:
         return [
             f
             for f in list_of_files
-            if f.endswith(".jpg") and ("Cat" in f or "Dog" in f)
+            # if f.endswith(".jpg") and ("COVID19" in f or "NORMAL" in f)
+            if f.endswith(".jpg") and ("RRU_ON_THE_GROUND" in f or "RRU_ON_THE_TOP" in f)
         ]
 
     def _preprocess(self, zf: ZipFile, f: str, working_dir: str):

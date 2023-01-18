@@ -1,13 +1,15 @@
 from deepClassifier.entity import PrepareBaseModelConfig
 import tensorflow as tf
 from pathlib import Path
+from deepClassifier import logger
+
 
 class PrepareBaseModel:
     def __init__(self, config: PrepareBaseModelConfig):
         self.config = config
 
     def get_base_model(self):
-        self.model = tf.keras.applications.vgg16.VGG16(
+        self.model = tf.keras.applications.resnet_v2.ResNet50V2(
             input_shape=self.config.params_image_size,
             weights=self.config.params_weights,
             include_top=self.config.params_include_top,
@@ -17,21 +19,27 @@ class PrepareBaseModel:
     @staticmethod
     def prepare_full_model(model, classes, freeze_all, freeze_till, learning_rate):
         if freeze_all:
+            logger.info(f'no training for base model')
             for layers in model.layers:
                 model.trainable = False
         elif (freeze_till is not None) and (freeze_till > 0):
+            logger.info(f'training till {freeze_till} for base model')
             for layers in model.layers[:-freeze_till]:
                 model.trainable = False
 
-        flatten_in = tf.keras.layers.Flatten()(model.output)
+        flatten_in = tf.keras.layers.GlobalAveragePooling2D()(model.output)
+        dense1 = tf.keras.layers.Dense(units=1024,activation='relu')(flatten_in)
+        # drop1 = tf.keras.layers.Dropout(0.20)(dense1)
+        # dense2 = tf.keras.layers.Dense(units=1024,activation='relu')(drop1)
+        # drop2 = tf.keras.layers.Dropout(0.20)(dense2)
         prediction = tf.keras.layers.Dense(units=classes, activation="softmax")(
-            flatten_in
+            dense1
         )
 
         full_model = tf.keras.models.Model(inputs=model.input, outputs=prediction)
 
         full_model.compile(
-            optimizer=tf.keras.optimizers.SGD(learning_rate=learning_rate),
+            optimizer=tf.keras.optimizers.Adam(learning_rate=learning_rate),
             loss=tf.keras.losses.CategoricalCrossentropy(),
             metrics=["accuracy"],
         )

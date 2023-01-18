@@ -38,11 +38,14 @@ class Training:
         if self.config.params_is_augmentation:
             train_datagenerator = tf.keras.preprocessing.image.ImageDataGenerator(
                 rotation_range=40,
+                vertical_flip=True,
                 horizontal_flip=True,
                 width_shift_range=0.2,
                 height_shift_range=0.2,
                 shear_range=0.2,
                 zoom_range=0.2,
+                # crop_to_aspect_ratio=True,
+                # interpolation="bilinear",
                 **datagenerator_kwargs
             )
         else:

@@ -7,6 +7,7 @@ class DataInjectionConfig:
     source_URL:str
     local_data_file:Path
     unzip_dir: Path
+    artifact_dir:str
 
 @dataclass(frozen=True)
 class PrepareBaseModelConfig:
@@ -35,3 +36,12 @@ class TrainingConfig:
     params_batch_size: int
     params_is_augmentation: bool
     params_image_size: list
+
+@dataclass(frozen=True)
+class EvaluationConfig:
+    path_of_model: Path
+    training_data: Path
+    all_params: dict
+    mlflow_uri: str
+    params_image_size: list
+    params_batch_size: int
