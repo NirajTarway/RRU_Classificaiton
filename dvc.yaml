@@ -5,7 +5,7 @@ stages:
       - src/deepClassifier/pipeline/stage_01_data_ingestion.py
       - configs/config.yaml
     outs:
-      - artifacts/data_ingestion/PetImages
+      - artifacts/data_ingestion/train
 
   prepare_base_model:
     cmd: python src/deepClassifier/pipeline/stage_02_prepare_base_model.py
@@ -28,7 +28,7 @@ stages:
       - src/deepClassifier/pipeline/stage_03_training.py
       - src/deepClassifier/components/prepare_callback.py
       - configs/config.yaml
-      - artifacts/data_ingestion/PetImages
+      - artifacts/data_ingestion/train
       - artifacts/prepare_base_model
     params:
       - IMAGE_SIZE
@@ -37,3 +37,17 @@ stages:
       - AUGMENTATION
     outs:
       - artifacts/training/model.h5
+
+  evaluation:
+    cmd: python src/deepClassifier/pipeline/stage_04_evaluation.py
+    deps:
+      - src/deepClassifier/pipeline/stage_04_evaluation.py
+      - configs/config.yaml
+      - artifacts/data_ingestion/train
+      - artifacts/training/model.h5
+    params:
+      - IMAGE_SIZE
+      - BATCH_SIZE
+    metrics:
+    - scores.json:
+        cache: false
