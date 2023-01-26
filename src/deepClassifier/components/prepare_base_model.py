@@ -9,12 +9,18 @@ class PrepareBaseModel:
         self.config = config
 
     def get_base_model(self):
+
+        # self.model = tf.keras.applications.mobilenet_v2.MobileNetV2(
+        #     input_shape=self.config.params_image_size,
+        #     weights=self.config.params_weights,
+        #     include_top=self.config.params_include_top,
+        # )
         self.model = tf.keras.applications.resnet_v2.ResNet50V2(
             input_shape=self.config.params_image_size,
             weights=self.config.params_weights,
             include_top=self.config.params_include_top,
         )
-
+        
         self.save_model(path=self.config.base_model_path, model=self.model)
     @staticmethod
     def prepare_full_model(model, classes, freeze_all, freeze_till, learning_rate):
@@ -30,8 +36,9 @@ class PrepareBaseModel:
         flatten_in = tf.keras.layers.GlobalAveragePooling2D()(model.output)
         dense1 = tf.keras.layers.Dense(units=1024,activation='relu')(flatten_in)
         # drop1 = tf.keras.layers.Dropout(0.20)(dense1)
-        # dense2 = tf.keras.layers.Dense(units=1024,activation='relu')(drop1)
+        # dense2 = tf.keras.layers.Dense(units=512,activation='relu')(drop1)
         # drop2 = tf.keras.layers.Dropout(0.20)(dense2)
+        # dense3 = tf.keras.layers.Dense(units=512,activation='relu')(drop2)
         prediction = tf.keras.layers.Dense(units=classes, activation="softmax")(
             dense1
         )

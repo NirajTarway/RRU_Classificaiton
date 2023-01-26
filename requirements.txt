@@ -1,4 +1,5 @@
 tensorflow
+scikit-learn
 dvc
 pandas
 notebook

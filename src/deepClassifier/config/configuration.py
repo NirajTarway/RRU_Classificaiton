@@ -74,6 +74,7 @@ class ConfigurationManager:
             trained_model_path=Path(training.trained_model_path),
             updated_base_model_path=Path(prepare_base_model.updated_base_model_path),
             training_data=Path(training_data),
+            history=Path(training.history),
             params_epochs=params.EPOCHS,
             params_batch_size=params.BATCH_SIZE,
             params_is_augmentation=params.AUGMENTATION,
@@ -85,7 +86,9 @@ class ConfigurationManager:
     def get_validation_config(self) -> EvaluationConfig:
         eval_config = EvaluationConfig(
             path_of_model=self.config.training.trained_model_path,
-            training_data=self.config.data_ingestion.unzip_dir,
+            training_data = os.path.join(self.config.data_ingestion.unzip_dir, self.config.evaluation.artifact_dir),
+            best_model_path= self.config.evaluation.best_model_path,
+            # training_data=self.config.data_ingestion.unzip_dir,
             mlflow_uri="https://dagshub.com/c17hawke/FSDS_NOV_deepCNNClassifier.mlflow",
             all_params=self.params,
             params_image_size=self.params.IMAGE_SIZE,

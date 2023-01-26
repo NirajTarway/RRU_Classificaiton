@@ -1,6 +1,5 @@
 artifacts_root: artifacts
 
-
 data_ingestion:
   root_dir: artifacts/data_ingestion
   source_URL: C:/nt/AIOps/Challenge 4 - Image Processing Application for RRU/train.zip
@@ -22,3 +21,13 @@ prepare_callbacks:
 training:
   root_dir: artifacts/training
   trained_model_path: artifacts/training/model.h5
+  history: artifacts/training/history.h5
+
+evaluation:
+  root_dir: artifacts/data_ingestion
+  artifact_dir: Validation
+  best_model_path: prediction_service/model.h5
+
+pusher:
+  best_model_path: prediction_service
+

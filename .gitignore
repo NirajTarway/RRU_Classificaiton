@@ -138,6 +138,7 @@ dmypy.json
 
 .h5
 artifacts/
+mlruns/
 
 artifacts/prepare_callbacks/checkpoint_dir/model.h5
 artifacts/prepare_callbacks/tensorboard_log_dir/tb_logs_at_2023-01-16-00-54-56/train/events.out.tfevents.1673810698.E-5CG23522DR.32284.0.v2
@@ -181,3 +182,4 @@ mlruns/0/6a41bf4e19d2461bb4dba324cb97f449/tags/mlflow.source.name
 mlruns/0/6a41bf4e19d2461bb4dba324cb97f449/tags/mlflow.source.type
 mlruns/0/6a41bf4e19d2461bb4dba324cb97f449/tags/mlflow.user
 mlruns/0/meta.yaml
+mlruns/0/3d85dca10b2e4b6d87870665b1df4ad9/metrics/accuracy

@@ -12,9 +12,9 @@ def main():
         val_config = config.get_validation_config()
         evaluation = Evaluation(val_config)
         evaluation.evaluation()
-        evaluation.save_score()
-        evaluation.log_into_mlflow()
-    except Exception as e:
+        # evaluation.save_score()
+        evaluation.log_into_mlflow()  
+    except Exception as e: 
         raise e
     
 
@@ -24,5 +24,5 @@ if __name__== '__main__':
         main()
         logger.info(f'>>>>>>>>>>>>>>>> stage: {STAGE_NAME} completed <<<<<<<<<<<<<<<<\n\n X<<<<<<<<<<<<------------------>>>>>>>>>>>X')
     except Exception as e:
-        logger.exception(e)
+        logger.exception(e)  
         raise e

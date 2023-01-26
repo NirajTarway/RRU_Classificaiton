@@ -1,6 +1,8 @@
 import tensorflow as tf
 from pathlib import Path
 from deepClassifier.entity import TrainingConfig
+from deepClassifier.utils.common import save_bin
+import pickle
 
 class Training:
     def __init__(self, config: TrainingConfig):
@@ -44,8 +46,7 @@ class Training:
                 height_shift_range=0.2,
                 shear_range=0.2,
                 zoom_range=0.2,
-                # crop_to_aspect_ratio=True,
-                # interpolation="bilinear",
+                fill_mode='nearest',
                 **datagenerator_kwargs
             )
         else:
@@ -62,12 +63,17 @@ class Training:
     def save_model(path: Path, model: tf.keras.Model):
         model.save(path)
 
+    @staticmethod
+    def save_history(path: Path, history):
+        with open(path, 'wb') as file_pi:
+                pickle.dump(history, file_pi)
+
 
     def train(self, callback_list: list):
         self.steps_per_epoch = self.train_generator.samples // self.train_generator.batch_size
         self.validation_steps = self.valid_generator.samples // self.valid_generator.batch_size
 
-        self.model.fit(
+        self.history = self.model.fit(
             self.train_generator,
             epochs=self.config.params_epochs,
             steps_per_epoch=self.steps_per_epoch,
@@ -80,3 +86,10 @@ class Training:
             path=self.config.trained_model_path,
             model=self.model
         )
+        self.save_history(
+            history=self.history.history,
+            path=self.config.history
+            )
+        
+
+        
